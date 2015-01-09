@@ -1,7 +1,7 @@
 class Auth::FacebookController < ApplicationController
 
 	def auth
-		redirect_to oauth_client.url_for_oauth_code(scope: "email")
+		redirect_to oauth_client.url_for_oauth_code(scope: "email,friend_list")
 	end
 
 	def callback

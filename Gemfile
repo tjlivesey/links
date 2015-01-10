@@ -19,6 +19,7 @@ gem 'redis'
 gem 'addressable'
 gem 'metainspector'
 gem 'httparty'
+gem 'sinatra', require: false
 gem 'koala'
 
 group :development, :test do

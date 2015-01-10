@@ -1,15 +1,13 @@
-class Facebook::LinkRetrievalWorker
-	include Sidekiq::Worker
+class Facebook::LinkRetrievalWorker < ActiveJob::Base
 
-	def perform(user_id)
-		@user = User.find(user_id)
-		if @user.facebook_access_token
-			retrieve_user_links
-		end
+	def perform(facebook_account_id)
+		@account = FacebookAccount.find(facebook_account_id)
+		@user = @account.user
+		retrieve_user_links
 	end
 
 	def facebook_client
-		Koala::Facebook::API.new(@user.facebook_access_token)
+		Koala::Facebook::API.new(@account.access_token)
 	end
 
 	def retrieve_user_links
@@ -25,17 +23,17 @@ class Facebook::LinkRetrievalWorker
 				next if url.host.nil? || url.host =~ /facebook/
 				url = Link.normalised_url(url.to_s)
 				link = Link.find_or_create_by(url: url)
-				puts link.errors.inspect
+				puts "LINK ERRORS: #{link.errors.inspect}" if link.errors.any?
 				link_post = LinkPost.find_or_initialize_by(
 					user: @user,
 					link: link,
+					facebook_account: @account,
 					posted_at: Time.parse(post["created_time"]),
 					post_id: post["id"],
 					owned: true
 				)
-				link_post.sources << "facebook" unless link_post.sources.include?("facebook")
 				link_post.save
-				puts link_post.errors.inspect
+				puts "LINK POST ERRORS: #{link_post.errors.inspect}" if link_post.errors.any?
 				link_count += 1
 			end
 			posts = posts.next_page

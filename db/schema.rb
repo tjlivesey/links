@@ -11,21 +11,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108212720) do
+ActiveRecord::Schema.define(version: 20150109103644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "facebook_accounts", force: :cascade do |t|
+    t.string   "facebook_id"
+    t.string   "access_token"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "image_url"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "link_posts", force: :cascade do |t|
     t.integer  "link_id"
     t.integer  "user_id"
-    t.text     "sources",    default: [],                array: true
-    t.boolean  "owned",      default: true
+    t.boolean  "owned",               default: true
     t.datetime "posted_at"
     t.string   "post_id"
     t.json     "post_data"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "facebook_account_id"
+    t.integer  "twitter_account_id"
   end
 
   add_index "link_posts", ["link_id"], name: "index_link_posts_on_link_id", using: :btree
@@ -42,16 +55,21 @@ ActiveRecord::Schema.define(version: 20150108212720) do
     t.datetime "updated_at",   null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "twitter_accounts", force: :cascade do |t|
     t.string   "twitter_id"
-    t.string   "twitter_username"
-    t.string   "twitter_access_token"
-    t.string   "twitter_access_token_secret"
+    t.string   "username"
+    t.string   "access_token"
+    t.string   "access_token_secret"
+    t.string   "image_url"
+    t.integer  "user_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  create_table "users", force: :cascade do |t|
     t.string   "email"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.string   "facebook_id"
-    t.string   "facebook_access_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

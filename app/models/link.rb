@@ -6,7 +6,7 @@ class Link < ActiveRecord::Base
 	before_validation :populate_metadata
 
 	validates :url, uniqueness: true, presence: true
-	#validates :title, presence: true
+	validates :title, presence: true
 	#validates :content_type, inclusion: { in: [:text, :video, :image] }
 
 	def self.normalised_url(url)

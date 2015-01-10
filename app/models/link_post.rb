@@ -1,6 +1,8 @@
 class LinkPost < ActiveRecord::Base
 	belongs_to :link
 	belongs_to :user
+	belongs_to :facebook_account
+	belongs_to :twitter_account
 
 	validates :user_id, presence: true
 	validates :link_id, presence: true, uniqueness: { scope: [:user_id, :owned] }, :if => :owned

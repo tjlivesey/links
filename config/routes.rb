@@ -11,4 +11,7 @@ Rails.application.routes.draw do
   get '/view' => 'links#show', as: :view_link
 
   resources :links
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

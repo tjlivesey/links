@@ -13,12 +13,20 @@ class Auth::TwitterController < ApplicationController
   		session[:twitter_request_token_secret],
   		:oauth_verifier => params[:oauth_verifier]
 		)
-		user = User.find_or_initialize_by(twitter_id: access_token.params[:user_id])
-		user.twitter_access_token = access_token.token
-		user.twitter_access_token_secret = access_token.secret
-		user.twitter_username = access_token.params[:username]
-		user.save!
+
+		twitter_account = TwitterAccount.find_or_initialize_by(twitter_id: access_token.params[:user_id])
+		unless user = twitter_account.user
+			user = current_user || User.create
+			twitter_account.user = user
+		end
 		session[:user_id] = user.id
+
+		twitter_account.access_token = access_token.token
+		twitter_account.access_token_secret = access_token.secret
+		puts access_token.params
+		twitter_account.username = access_token.params[:screen_name]
+		twitter_account.image_url = access_token.params[:profile_image_url_https]
+		twitter_account.save!
 		redirect_to links_path
 	end
 

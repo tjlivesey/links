@@ -28,12 +28,12 @@ class Link < ActiveRecord::Base
 		errors.add(:url) unless page.response.status < 400
 		errors.add(:content_type) unless page.content_type == "text/html"
 		if !page.title.blank?
-			self.title = page.title
+			self.title = page.title unless page.title
 		else
 			self.title = "Page Title Missing"
 		end
-		self.description = page.description
-		self.image_url = page.images.best
+		self.description = page.description unless self.description
+		self.image_url = page.images.best unless self.image_url
 	end
 
 end

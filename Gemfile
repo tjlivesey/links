@@ -22,6 +22,7 @@ gem 'httparty'
 gem 'sinatra', require: false
 gem 'koala'
 gem 'oauth2'
+gem 'google_plus'
 
 group :development, :test do
   gem 'byebug'

@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   get 'auth/linkedin' => 'auth/linkedin#auth', as: :linkedin_auth
   get 'auth/linkedin/callback' => 'auth/linkedin#callback', as: :linkedin_callback
 
+  get 'auth/google' => 'auth/google#auth', as: :google_auth
+  get 'auth/google/callback' => 'auth/google#callback', as: :google_callback
+
   get '/view' => 'links#show', as: :view_link
 
   resources :links

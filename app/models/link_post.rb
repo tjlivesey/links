@@ -4,6 +4,7 @@ class LinkPost < ActiveRecord::Base
 	belongs_to :facebook_account
 	belongs_to :twitter_account
 	belongs_to :linkedin_account
+	belongs_to :google_account
 
 	validates :user_id, presence: true
 	validates :link_id, presence: true

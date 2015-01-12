@@ -29,7 +29,7 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 			since_id: @account.link_posts.where(owned: true).order("posted_at DESC").first.try(:post_id)
 		}.reject { |_,v| v.nil? }
 
-		while count < 180 && link_count < 3200
+		while count < 180 && link_count < 500
 			count += 1
 			account_tweets = twitter_client.user_timeline(@account.twitter_id.to_i, opts)
 			break if account_tweets.empty?
@@ -38,18 +38,22 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 					begin
 						url = Link.normalised_url(url.expanded_url.to_s)
 						link = Link.find_or_create_by(url: url)
-						link_post = LinkPost.find_or_initialize_by(
-							user: @user,
-							link: link,
-							twitter_account: @account,
-							posted_at: tweet.created_at,
-							post_id: tweet.id,
-							owned: true
-						)
-						link_post.save
-						link_count += 1
+						puts "LINK ERRORS: #{link.errors.inspect}" if link.errors.any?
+						if link.persisted?
+							link_post = LinkPost.find_or_initialize_by(
+								user: @user,
+								link_id: link.try(:id),
+								twitter_account: @account,
+								posted_at: tweet.created_at,
+								post_id: tweet.id,
+								owned: true
+							)
+							link_post.save
+							link_count += 1
+							puts "LINK POST ERRORS: #{link_post.errors.inspect}" if link_post.errors.any?
+						end
 					rescue => e
-						Rails.logger.warn "Rescues exception while processing link: #{e}"
+						Rails.logger.warn "Rescued exception while processing link: #{e}"
 					end
 				end
 			end
@@ -65,9 +69,9 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 		opts = {
 			include_rts: true, 
 			count: 200, 
-			trim_user: true,
+			trim_user: false,
 			exclude_replies: true,
-			contributor_details: false,
+			contributor_details: true,
 			include_entities: true,
 			since_id: @account.link_posts.where(owned: false).order("posted_at DESC").first.try(:post_id)
 		}.reject { |_,v| v.nil? }
@@ -84,9 +88,10 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 						link = Link.find_or_create_by(url: url)
 						link_post = LinkPost.find_or_create_by(
 							user: @user,
-							link: link,
+							link_id: link.try(:id),
 							twitter_account: @account,
 							posted_at: tweet.created_at,
+							posted_by: "@#{tweet.user.screen_name}",
 							post_id: tweet.id,
 							owned: false
 						)

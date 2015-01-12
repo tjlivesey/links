@@ -7,11 +7,9 @@ class Link < ActiveRecord::Base
 
 	validates :url, uniqueness: true, presence: true
 	validates :title, presence: true
-	#validates :content_type, inclusion: { in: [:text, :video, :image] }
 
 	def self.normalised_url(url)
-		resolved_uri = HTTParty.get(url).request.uri
-
+		resolved_uri = MetaInspector.new(url).url
 		uri = Addressable::URI.parse(resolved_uri)
 		uri.scheme = "http"
 		uri.normalize
@@ -27,10 +25,13 @@ class Link < ActiveRecord::Base
 
 	def populate_metadata
 		page = MetaInspector.new(url)
-		unless page.response.status == 200
-			errors.add(:url)
+		errors.add(:url) unless page.response.status < 400
+		errors.add(:content_type) unless page.content_type == "text/html"
+		if !page.title.blank?
+			self.title = page.title
+		else
+			self.title = "Page Title Missing"
 		end
-		self.title = page.title
 		self.description = page.description
 		self.image_url = page.images.best
 	end

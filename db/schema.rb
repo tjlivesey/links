@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150109103644) do
+ActiveRecord::Schema.define(version: 20150112155503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,11 +39,25 @@ ActiveRecord::Schema.define(version: 20150109103644) do
     t.datetime "updated_at",                         null: false
     t.integer  "facebook_account_id"
     t.integer  "twitter_account_id"
+    t.integer  "linkedin_account_id"
+    t.string   "posted_by"
   end
 
   add_index "link_posts", ["link_id"], name: "index_link_posts_on_link_id", using: :btree
   add_index "link_posts", ["owned"], name: "index_link_posts_on_owned", using: :btree
   add_index "link_posts", ["user_id"], name: "index_link_posts_on_user_id", using: :btree
+
+  create_table "linkedin_accounts", force: :cascade do |t|
+    t.string   "linkedin_id"
+    t.string   "access_token"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "headline"
+    t.string   "image_url"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "links", force: :cascade do |t|
     t.string   "url"

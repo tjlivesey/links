@@ -21,6 +21,7 @@ gem 'metainspector'
 gem 'httparty'
 gem 'sinatra', require: false
 gem 'koala'
+gem 'oauth2'
 
 group :development, :test do
   gem 'byebug'

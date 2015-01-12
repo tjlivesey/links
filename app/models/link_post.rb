@@ -3,13 +3,17 @@ class LinkPost < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :facebook_account
 	belongs_to :twitter_account
+	belongs_to :linkedin_account
 
 	validates :user_id, presence: true
-	validates :link_id, presence: true, uniqueness: { scope: [:user_id, :owned] }, :if => :owned
+	validates :link_id, presence: true
 	validates :posted_at, presence: true
 	validates :post_id, presence: true
 
 	scope :owned, ->{ where(owned: true )}
 	scope :network, ->{ where(owned: false )}
+	scope :linkedin, ->{ where("linkedin_account_id is not NULL") }
+	scope :facebook, ->{ where("facebook_account_id is not NULL") }
+	scope :twitter, ->{ where("twitter_account_id is not NULL") }
 
 end

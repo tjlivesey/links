@@ -1,29 +1,33 @@
-=link_to "Sign in with twitter", twitter_auth_path
-||
-=link_to "Connect facebook", facebook_auth_path
-||
-=link_to "Connect linkedin", linkedin_auth_path
-||
-=link_to "Connect Google", google_auth_path
+#sidebar-wrapper
 
-h1 Links
+	ul.sidebar-nav
+    li.sidebar-brand
+      a href="#" 
+        | Start Bootstrap
+    li
+      a href="#"  Dashboard
+    li
+      a href="#"  Shortcuts
+    li
+      a href="#"  Overview
+    li
+      a href="#"  Events
+    li
+      a href="#"  About
+    li
+      a href="#"  Services
+    li
+      a href="#"  Contact
 
-h3 My links
+#page-content-wrapper
+	.container-fluid
+    .row
+      .col-lg-12
+      	a#menu-toggle.btn.btn-default href="#menu-toggle" Menu
 
-ul.links
-	-@posted_links.each do |l|
-	 li.link
-	 	=link_to l.url, target: "new" do
-		 	span.image =image_tag(l.image_url, width: 50)
-		 	span.title =l.title
-		 	span.description =truncate(l.description, length: 100)
+      	ul.links
+      		-@links.each_with_index do |link, index|
+      			-if index == 0
+      			li.link
 
-h3 Network links
 
-ul.links
-	-@network_links.each do |l|
-	 li.link
-	 	=link_to l.url, target: "new" do
-		 	span.image =image_tag(l.image_url, width: 50)
-		 	span.title =l.title
-		 	span.description =truncate(l.description, length: 100)

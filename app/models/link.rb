@@ -2,6 +2,7 @@ require 'open-uri'
 
 class Link < ActiveRecord::Base
 	belongs_to :user
+	has_many :link_posts
 
 	before_validation :populate_metadata
 
@@ -27,13 +28,13 @@ class Link < ActiveRecord::Base
 		page = MetaInspector.new(url)
 		errors.add(:url) unless page.response.status < 400
 		errors.add(:content_type) unless page.content_type == "text/html"
-		if !page.title.blank?
-			self.title = page.title unless page.title
+		if page.title.blank?
+			self.title = self.title || page.host
 		else
-			self.title = "Page Title Missing"
+			self.title = page.title
 		end
-		self.description = page.description unless self.description
-		self.image_url = page.images.best unless self.image_url
+		self.description = self.description || page.description 
+		self.image_url = self.image_url || page.images.best
 	end
 
 end

@@ -13,4 +13,8 @@ module SocialAccount
 		klass.perform_later(id)
 	end
 
+	def access_token_expired?
+		self.respond_to?(:access_token_expiry) && access_token_expiry < Time.zone.now
+	end
+
 end

@@ -14,10 +14,13 @@ Rails.application.routes.draw do
   get 'auth/google' => 'auth/google#auth', as: :google_auth
   get 'auth/google/callback' => 'auth/google#callback', as: :google_callback
 
-  get '/view' => 'links#show', as: :view_link
-
   resources :links
 
+  namespace :api do
+    resources :links, only: [:index, :destroy]
+  end
+
   require 'sidekiq/web'
+  require 'sidetiq/web'
   mount Sidekiq::Web => '/sidekiq'
 end

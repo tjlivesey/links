@@ -17,4 +17,6 @@ class LinkPost < ActiveRecord::Base
 	scope :facebook, ->{ where("facebook_account_id is not NULL") }
 	scope :twitter, ->{ where("twitter_account_id is not NULL") }
 
+	def source
+	end
 end

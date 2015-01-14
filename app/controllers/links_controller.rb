@@ -1,8 +1,11 @@
 class LinksController < ApplicationController
 
 	def index
-		@posted_links = current_user.links.owned.order("posted_at DESC")
-		@network_links = current_user.links.network.order("posted_at DESC")
+		params[:filter] = "network" unless ["network", "self", "recommended"].include? params[:filter]
+		if params[:filter] == "network"
+			@link_posts = current_user.link_posts.network.order("posted_at DESC").limit(20).includes(:link)
+			@links = @link_posts.map(&:link)
+		end
 	end
 
 	def show

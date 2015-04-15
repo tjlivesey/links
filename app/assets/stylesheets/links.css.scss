@@ -1,13 +1,49 @@
 ul.links {
 	list-style: none;
 
+	li.date {
+		font-weight: bold;
+		margin-bottom: 15px;
+		margin-top: 30px;
+		border-bottom: 2px solid #ecf0f1;
+	}
+
+	li.link {
+		height: 70px;
+		min-height: 70px;
+	}
+
 	.link-image {
-		.image-container {
-			width: 125px;
-			height: 100px;
-			img {
-				width: 100%;
-    		overflow: hidden;
+		height: 60px;
+		float: left;
+		overflow: hidden;
+
+		img {
+			height: 100%;
+		}
+	}
+
+	.link-info {
+		a {
+			text-decoration: none;
+			color: #1abc9c;
+			:hover {
+				color: darken(#1abc9c, 5%);
+			}
+		}
+		.title {
+			font-weight: bold;
+		}
+		.url {
+			color: #95a5a6;
+			font-weight: 100;
+		}
+
+		.meta {
+			.posted-by {
+				float: right;
+				font-weight: 100;
+				color: #95a5a6;
 			}
 		}
 	}

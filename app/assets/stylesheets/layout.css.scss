@@ -96,6 +96,33 @@
     background: none;
 }
 
+.social-connect {
+    margin-top: 40px;
+    a {
+        border-radius: 0;
+    }
+}
+
+ul.filter-menu {
+    margin-top: 20px;
+    list-style: none;
+
+    li {
+        float: left;
+        margin-right: 20px;
+        a {
+            color: #bdc3c7;
+        }
+    }
+
+    li.active {
+        a {
+            color: #1abc9c;
+        }
+    }
+}
+
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 250px;

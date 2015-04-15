@@ -1,63 +1,53 @@
 #sidebar-wrapper
 
-	ul.sidebar-nav
-    li.sidebar-brand
-      a href="#" 
-        | Start Bootstrap
-    li
-      a href="#"  Dashboard
-    li
-      a href="#"  Shortcuts
-    li
-      a href="#"  Overview
-    li
-      a href="#"  Events
-    li
-      a href="#"  About
-    li
-      a href="#"  Services
-    li
-      a href="#"  Contact
+	.sidebar-nav
+    .social-connect
+      a.btn.btn-facebook.btn-social.btn-block href="/auth/facebook"  
+        i.fa.fa-facebook
+        | Connect to Facebook
+      a.btn.btn-twitter.btn-social.btn-block href="/auth/twitter"  
+        i.fa.fa-twitter
+        | Connect to Twitter
+      a.btn.btn-linkedin.btn-social.btn-block href="/auth/linkedin"  
+        i.fa.fa-linkedin
+        | Connect to LinkedIn
+      a.btn.btn-google-plus.btn-social.btn-block href="/auth/google"  
+        i.fa.fa-google-plus
+        | Connect to Google+
 
 #page-content-wrapper
 	.container-fluid
     .row
       .col-sm-12
-      	a#menu-toggle.btn.btn-default href="#menu-toggle" Menu
+      	a#menu-toggle href="#menu-toggle"
+          i.fa.fa-bars
 
       .col-sm-12
       	ul.filter-menu
-      		li
+          li class="#{'active' if params[:filter] == 'network'}"
       			=link_to "Network", links_path(filter: "network")
-      		li
+          li class="#{'active' if params[:filter] == 'self'}"
       			=link_to "My Links", links_path(filter: "self")
-      		li
-      			=link_to "Recommended", links_path(filter: "recommended")
+        .clearfix
 
 
       	ul.links
-      		-@link_posts.each_with_index do |post, index|
-      			-if index == 0 || post.posted_at.day != @current_day
-      				li.date =post.posted_at.strftime("%d %^b %Y")
-      			li.link
-      				.row 
-      					.link-image
-      						.image-container
-      							=link_to post.link.url, target: "_blank" do
-      								=image_tag post.link.image_url, height: 60
-      					.link-body
-      						=link_to post.link.url, target: "_blank" do
-      							.title =post.link.title
-      						.description =post.link.description
-      						.url =post.link.host
+          -@link_posts.each_with_index do |post, index|
 
-      						span 
-      						br
-		      			 	span =post.link.description
-		      			 	br
-		      			 	span =post.link.url
-		      			 	br
-		      			 	span =post.posted_by
-      			-@current_day = post.posted_at.day
+            -if index == 0 || date_change?(@link_posts, index)
+              li.date =post.posted_at.strftime("%d %^b %Y")
+            li.link
+              .row
+                .link-image.col-sm-2
+                  =link_to post.link.url, target: "_blank" do
+                    =image_tag post.link.image_url
+                .link-info.col-sm-10
+                  =link_to post.link.url, target: "_blank" do
+                    .title =post.link.title
+                  .description =post.link.description
+                  .url =post.link.host
+                  .meta
+                    .posted-by = "via #{post.posted_by}"
+
 
 

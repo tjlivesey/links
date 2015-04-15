@@ -5,14 +5,9 @@ Rails.application.routes.draw do
   get 'auth/twitter' => 'auth/twitter#auth', as: :twitter_auth
   get 'auth/twitter/callback' => 'auth/twitter#callback', as: :twitter_callback
 
-  get 'auth/facebook' => 'auth/facebook#auth', as: :facebook_auth
-  get 'auth/facebook/callback' => 'auth/facebook#callback', as: :facebook_callback
+  get 'auth/:site', to: 'auth/oauth#auth', as: :oauth_authorisation, constraints: { site: /google|linkedin|facebook/ }
+  get 'auth/:site/callback', to: 'auth/oauth#callback', as: :oauth_callback, constraints: { site: /google|linkedin|facebook/ }
 
-  get 'auth/linkedin' => 'auth/linkedin#auth', as: :linkedin_auth
-  get 'auth/linkedin/callback' => 'auth/linkedin#callback', as: :linkedin_callback
-
-  get 'auth/google' => 'auth/google#auth', as: :google_auth
-  get 'auth/google/callback' => 'auth/google#callback', as: :google_callback
 
   resources :links
 
@@ -23,4 +18,12 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   require 'sidetiq/web'
   mount Sidekiq::Web => '/sidekiq'
+
+  class Oauth2Constraint
+
+    def self.matches?(request)
+
+    end
+
+  end
 end

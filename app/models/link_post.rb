@@ -1,10 +1,7 @@
 class LinkPost < ActiveRecord::Base
 	belongs_to :link
 	belongs_to :user
-	belongs_to :facebook_account
-	belongs_to :twitter_account
-	belongs_to :linkedin_account
-	belongs_to :google_account
+	belongs_to :social_account
 
 	validates :user_id, presence: true
 	validates :link_id, presence: true
@@ -13,10 +10,8 @@ class LinkPost < ActiveRecord::Base
 
 	scope :owned, ->{ where(owned: true )}
 	scope :network, ->{ where(owned: false )}
-	scope :linkedin, ->{ where("linkedin_account_id is not NULL") }
-	scope :facebook, ->{ where("facebook_account_id is not NULL") }
-	scope :twitter, ->{ where("twitter_account_id is not NULL") }
 
 	def source
+		return 
 	end
 end

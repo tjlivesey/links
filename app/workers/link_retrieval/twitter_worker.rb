@@ -1,4 +1,4 @@
-class Twitter::LinkRetrievalWorker < ActiveJob::Base
+class LinkRetrieval::TwitterWorker < ActiveJob::Base
 
 	def perform(twitter_account_id)
 		@account = TwitterAccount.find(twitter_account_id)
@@ -31,7 +31,7 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 
 		while count < 180 && link_count < 500
 			count += 1
-			account_tweets = twitter_client.user_timeline(@account.twitter_id.to_i, opts)
+			account_tweets = twitter_client.user_timeline(@account.external_id.to_i, opts)
 			break if account_tweets.empty?
 			account_tweets.each do |tweet|
 				tweet.urls.each do |url|
@@ -43,8 +43,10 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 							link_post = LinkPost.find_or_initialize_by(
 								user: @user,
 								link_id: link.try(:id),
-								twitter_account: @account,
+								social_account: @account,
+								source: :twitter,
 								posted_at: tweet.created_at,
+								posted_by: @account.username,
 								post_id: tweet.id,
 								owned: true
 							)
@@ -81,7 +83,7 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 			network_tweets = twitter_client.home_timeline(opts)
 			break if network_tweets.empty?
 			network_tweets.each do |tweet|
-				next if tweet.user.id.to_i == @account.twitter_id.to_i
+				next if tweet.user.id.to_i == @account.external_id.to_i
 				tweet.urls.each do |url|
 					begin
 						url = Link.normalised_url(url.expanded_url.to_s)
@@ -89,9 +91,9 @@ class Twitter::LinkRetrievalWorker < ActiveJob::Base
 						link_post = LinkPost.find_or_create_by(
 							user: @user,
 							link_id: link.try(:id),
-							twitter_account: @account,
+							social_account: @account,
 							posted_at: tweet.created_at,
-							posted_by: "@#{tweet.user.screen_name}",
+							posted_by: tweet.user.screen_name,
 							post_id: tweet.id,
 							owned: false
 						)

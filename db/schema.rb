@@ -11,69 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150113114824) do
+ActiveRecord::Schema.define(version: 20150114174958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "facebook_accounts", force: :cascade do |t|
-    t.string   "facebook_id"
-    t.string   "access_token"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email"
-    t.string   "image_url"
-    t.integer  "user_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.datetime "access_token_expiry"
-  end
-
-  create_table "google_accounts", force: :cascade do |t|
-    t.string   "google_id"
-    t.string   "access_token"
-    t.string   "image_url"
-    t.string   "name"
-    t.string   "email"
-    t.integer  "user_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.string   "refresh_token"
-    t.datetime "access_token_expiry"
-  end
-
   create_table "link_posts", force: :cascade do |t|
     t.integer  "link_id"
     t.integer  "user_id"
-    t.boolean  "owned",               default: true
+    t.boolean  "owned",             default: true
     t.datetime "posted_at"
     t.string   "post_id"
     t.json     "post_data"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "facebook_account_id"
-    t.integer  "twitter_account_id"
-    t.integer  "linkedin_account_id"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.string   "posted_by"
-    t.integer  "google_account_id"
+    t.integer  "social_account_id"
+    t.string   "source"
   end
 
   add_index "link_posts", ["link_id"], name: "index_link_posts_on_link_id", using: :btree
   add_index "link_posts", ["owned"], name: "index_link_posts_on_owned", using: :btree
   add_index "link_posts", ["user_id"], name: "index_link_posts_on_user_id", using: :btree
-
-  create_table "linkedin_accounts", force: :cascade do |t|
-    t.string   "linkedin_id"
-    t.string   "access_token"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "headline"
-    t.string   "image_url"
-    t.integer  "user_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.datetime "access_token_expiry"
-  end
 
   create_table "links", force: :cascade do |t|
     t.string   "url"
@@ -85,15 +44,21 @@ ActiveRecord::Schema.define(version: 20150113114824) do
     t.datetime "updated_at",   null: false
   end
 
-  create_table "twitter_accounts", force: :cascade do |t|
-    t.string   "twitter_id"
-    t.string   "username"
+  create_table "social_accounts", force: :cascade do |t|
+    t.string   "type"
+    t.string   "external_id"
     t.string   "access_token"
     t.string   "access_token_secret"
+    t.string   "access_token_expires_at"
+    t.string   "refresh_token"
+    t.string   "email"
+    t.string   "name"
     t.string   "image_url"
-    t.integer  "user_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.string   "user_id"
+    t.string   "username"
+    t.string   "description"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "users", force: :cascade do |t|

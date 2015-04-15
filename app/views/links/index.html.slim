@@ -22,12 +22,42 @@
 #page-content-wrapper
 	.container-fluid
     .row
-      .col-lg-12
+      .col-sm-12
       	a#menu-toggle.btn.btn-default href="#menu-toggle" Menu
 
+      .col-sm-12
+      	ul.filter-menu
+      		li
+      			=link_to "Network", links_path(filter: "network")
+      		li
+      			=link_to "My Links", links_path(filter: "self")
+      		li
+      			=link_to "Recommended", links_path(filter: "recommended")
+
+
       	ul.links
-      		-@links.each_with_index do |link, index|
-      			-if index == 0
+      		-@link_posts.each_with_index do |post, index|
+      			-if index == 0 || post.posted_at.day != @current_day
+      				li.date =post.posted_at.strftime("%d %^b %Y")
       			li.link
+      				.row 
+      					.link-image
+      						.image-container
+      							=link_to post.link.url, target: "_blank" do
+      								=image_tag post.link.image_url, height: 60
+      					.link-body
+      						=link_to post.link.url, target: "_blank" do
+      							.title =post.link.title
+      						.description =post.link.description
+      						.url =post.link.host
+
+      						span 
+      						br
+		      			 	span =post.link.description
+		      			 	br
+		      			 	span =post.link.url
+		      			 	br
+		      			 	span =post.posted_by
+      			-@current_day = post.posted_at.day
 
 

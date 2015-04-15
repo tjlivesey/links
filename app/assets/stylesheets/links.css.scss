@@ -1,0 +1,14 @@
+ul.links {
+	list-style: none;
+
+	.link-image {
+		.image-container {
+			width: 125px;
+			height: 100px;
+			img {
+				width: 100%;
+    		overflow: hidden;
+			}
+		}
+	}
+}

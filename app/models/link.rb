@@ -21,7 +21,7 @@ class Link < ActiveRecord::Base
 			query_hash.reject! { |k,_| k =~ /utm/ }
 			uri.query_values = query_hash
 		end
-		uri.to_s
+		uri.to_s.gsub(/\?\z/, "")
 	end
 
 	def populate_metadata
@@ -35,6 +35,10 @@ class Link < ActiveRecord::Base
 		end
 		self.description = self.description || page.description 
 		self.image_url = self.image_url || page.images.best
+	end
+
+	def host
+		Addressable::URI.parse(url).host
 	end
 
 end

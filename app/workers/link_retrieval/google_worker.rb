@@ -1,4 +1,4 @@
-class Google::LinkRetrievalWorker < ActiveJob::Base
+class LinkRetrieval::GoogleWorker < ActiveJob::Base
 	BASE_URL = 'https://www.googleapis.com/plus/v1'
 
 	def perform(google_account_id)
@@ -34,7 +34,8 @@ class Google::LinkRetrievalWorker < ActiveJob::Base
 							link_post = LinkPost.find_or_initialize_by(
 								user: @user,
 								link_id: link.try(:id),
-								google_account: @account,
+								social_account: @account,
+								source: :google,
 								posted_at: DateTime.parse(item['published']),
 								post_id: item["id"],
 								owned: true
@@ -70,8 +71,6 @@ class Google::LinkRetrievalWorker < ActiveJob::Base
 
 			response = HTTParty.get(BASE_URL + "/people/#{person['id']}/activities/public", opts).parsed_response
 			response["items"].each do |item|
-				puts "LATEST: #{latest.to_s}"
-				puts "ARTICLE PUBLISHED: #{item['published']}"
 				break if DateTime.parse(item['published']).to_i <= latest.to_i
 				next unless item["object"]["attachments"]
 				
@@ -88,7 +87,8 @@ class Google::LinkRetrievalWorker < ActiveJob::Base
 							link_post = LinkPost.find_or_initialize_by(
 								user: @user,
 								link_id: link.try(:id),
-								google_account: @account,
+								social_account: @account,
+								source: :google,
 								posted_at: DateTime.parse(item['published']),
 								post_id: item["id"],
 								posted_by: person["displayName"],

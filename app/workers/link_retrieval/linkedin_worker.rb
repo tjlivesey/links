@@ -1,4 +1,4 @@
-class Linkedin::LinkRetrievalWorker < ActiveJob::Base
+class LinkRetrieval::LinkedinWorker < ActiveJob::Base
 	BASE_URL = "https://api.linkedin.com/v1"
 	DEFAULT_OPTIONS = {
 		query: {
@@ -34,7 +34,8 @@ class Linkedin::LinkRetrievalWorker < ActiveJob::Base
 			link_post = LinkPost.find_or_initialize_by(
 				user: @user,
 				link_id: link.try(:id),
-				linkedin_account: @account,
+				social_account: @account,
+				source: :linkedin,
 				posted_at: Time.at(share["timestamp"]/1000),
 				post_id: share["id"],
 				owned: true
@@ -52,7 +53,7 @@ class Linkedin::LinkRetrievalWorker < ActiveJob::Base
 		stream = HTTParty.get(BASE_URL + "/people/~/network/updates", opts).parsed_response
 		stream["values"].each do |item|
 			share = item["updateContent"]["person"]["currentShare"]
-			next unless share && share["author"]["id"] != @account.linkedin_id
+			next unless share && share["author"]["id"] != @account.external_id
 			begin
 				url = share["content"]["submittedUrl"]
 				url = Link.normalised_url(url)
@@ -62,7 +63,8 @@ class Linkedin::LinkRetrievalWorker < ActiveJob::Base
 					link_post = LinkPost.find_or_initialize_by(
 						user: @user,
 						link_id: link.try(:id),
-						linkedin_account: @account,
+						social_account: @account,
+						source: :linkedin,
 						posted_at: Time.at(share["timestamp"]/1000),
 						posted_by: "#{share['author']['firstName']} #{share['author']['lastName']}",
 						post_id: share["id"],

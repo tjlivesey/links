@@ -1,4 +1,4 @@
-class Facebook::LinkRetrievalWorker < ActiveJob::Base
+class LinkRetrieval::FacebookWorker < ActiveJob::Base
 
 	def perform(facebook_account_id)
 		@account = FacebookAccount.find(facebook_account_id)
@@ -26,7 +26,8 @@ class Facebook::LinkRetrievalWorker < ActiveJob::Base
 					link_post = LinkPost.find_or_initialize_by(
 						user: @user,
 						link_id: link.try(:id),
-						facebook_account: @account,
+						social_account: @account,
+						source: :facebook,
 						posted_at: Time.parse(post["created_time"]),
 						post_id: post["id"],
 						owned: true
